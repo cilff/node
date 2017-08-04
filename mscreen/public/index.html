@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name = "viewport" content="width=device-width, initial-scale=1, maximum-scale = 1.0, user-scalable = 0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="app-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="apple-touch-fullscreen" content="yes" />   
+    <title>mScreen</title>
+    <link rel="icon" type="image/png" href="img/ticket.png" />
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap-dialog.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!--<script src="js/bootstrap.min.js"></script>-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/ufunc.js"></script>
+    <script src="js/mfunc.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/bootstrap-dialog.js"></script>
+    <script type="text/javascript" src="http://u.ypcloud.com/Scripts/uCenter.js"></script>
+    
+    <div class="container-fluid" id="login_page" style="display:none">
+        <div class="row">
+            <div class="col-md-4 col-xs-2"></div>
+            <div class="col-md-4 col-xs-6">
+                <h3 style="text-align:center;margin-top:3em;margin-bottom:3em">User Login</h3>
+                <form>
+                <div class="form-group">
+                    <label for="acc_ulogin">Email address</label>
+                    <input type="email" class="form-control" id="acc_login" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label for="pwd_ulogin">Password</label>
+                    <input type="password" class="form-control" id="pwd_login" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="dname_ulogin">Device name</label>
+                    <input type="text" class="form-control" id="dname_login" placeholder="">
+                </div>
+                <button type="submit" class="btn btn-default" style="margin-top:2em" id="btn_submit_login">Submit</button>
+                </form>
+            </div>          
+        </div>
+    </div>
+    <div id="mySideNav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="$.sidenav.closeNav('')" onmousedown="$.sidenav.closeNav()">&times;</a>
+        <a href="#" id="ms_scn">SmartScreen</a>
+        <a href="#" id="set_scn">Setting</a>
+        <a href="#" id="play_scn">Play</a>
+        <a href="#" id="lo_scn">Logout</a>
+    </div>  
+    <div class="container-full" id="ms_page" style="display:block">
+        <div id="ms_row" class="row-fluid">
+            <div id="ms_zplane" style="position:absolute;bottom:0;margin:0;width:100%;height:50px;z-index:100"></div>
+            <div id="ms_body" style="position:absolute;top:0;left:0;bottom:0;right:0;margin:0;padding:0;text-align:center;width:100%;height:100%;background-color:black;overflow:hidden"></div>
+        </div>
+    </div>
+    <div class="container-fluid" id="set_page" style="display:none">
+        <span style="font-size:30px;cursor:pointer" onclick="$.sidenav.openNav()" onmousedown="$.sidenav.openNav()">&#9776;</span>
+        <!--
+        <button type="button" class="btn btn-default btn-lg" style="border:0">
+            <span class="glyphicon glyphicon-align-justify" aria-hidden="true" onmousedown="$.sidenav.openNav()"></span>
+        </button>
+        -->
+        <div class="page-header">
+            <h2>Setting</h2>
+        </div>
+        <div id="set_body">
+            <div>
+                <p class="pull-right" >
+                    <button data-button="save" type="button" class="btn btn-primary" id="btn_save_setting">
+                        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+                    </button>
+                    <br>
+                </p>
+            </div>
+            <div class="row">
+                <form class="form-horizontal col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_address">Address</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="set_address" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_face">Face</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_face" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_ddn">DDN</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_ddn" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_owner">Owner</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_owner" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_name">Name</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_name" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_type">Type</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_type" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_tag">Tag</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_tag" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_location">Location</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_location" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_mirror">Mirror</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_mirror" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_moteweb">Mote Web</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_moteweb" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_appweb">App Web</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_appweb" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="set_appdata">App Data</label>
+                        <div class="col-sm-10"> 
+                            <input type="text" class="form-control" id="set_appdata" placeholder="">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="disp_page" style="display:none">
+        <span style="font-size:30px;cursor:pointer" onclick="$.sidenav.openNav()" onmousedown="$.sidenav.openNav()">&#9776;</span>
+        <div class="page-header">
+            <h2>Display</h2>
+        </div>
+        <div id="disp_body">
+        </div>
+    </div>
+    <div class="container-fluid" id="play_page" style="display:none">
+        <span style="font-size:30px;cursor:pointer" onclick="$.sidenav.openNav()" onmousedown="$.sidenav.openNav()">&#9776;</span>
+        <div class="page-header">
+            <h2>Play</h2>
+        </div>
+        <div id="play_body">
+            <div id="div_playlist">
+                <div>
+                    <p class="pull-right">
+                        <!--
+                        <button type="button" class="btn btn-warning" aria-label="Left Align" id="btn-removeall-play">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> RemoveAll
+                        </button>
+                        -->
+                        <button type="button" class="btn btn-primary" aria-label="Left Align" id="btn-nearby-play">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span> NearBy
+                        </button>
+                        <button type="button" class="btn btn-primary" aria-label="Left Align" id="btn-dropall-play">
+                            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> DropAll
+                        </button>
+                        <button type="button" class="btn btn-primary" aria-label="Left Align" id="btn-new-play">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New
+                        </button>
+                    </p>
+                </div>
+                <div id="select_playlist">
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div id="playModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Play setting</h4>
+                    <div>
+                        <p class="pull-right">
+                            <button type="button" class="btn btn-warning" aria-label="Left Align" id="btn-remove-play">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove
+                            </button>
+                            <button type="button" class="btn btn-primary" aria-label="Left Align" id="btn-save-play">
+                                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save
+                            </button>
+                            <button type="button" class="btn btn-primary" aria-label="Left Align" id="btn-drop-play">
+                                <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Drop
+                            </button>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    New play item, please fill out following settings:
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="play_id">
+                    <div id="form_playlist" style="font-size:1em">
+                        <form class="form-horizontal col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_name">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="play_name" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_dev">Device</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="play_dev" style="color:blue;background-color:lightgray"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_target">Target</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="play_target" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_sample_url">Website</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="play_sample_url" style="color:blue;background-color:lightgray"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_url">URL</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="play_url" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="play_delay">Delay</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="play_delay" placeholder="">
+                                </div>
+                            </div>
+                        </form>
+                    </div>   
+                    <!--
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    -->
+                </div>
+            </div>
+        </div>
+    </div>    
+</html>

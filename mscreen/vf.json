@@ -1,0 +1,6 @@
+{
+	"VirtualFolder": [
+        {"NickName":"udrive","Icon":"udrive","Type":"uid","Name":"uDrive","Path":"c:\\ppk\\ppk-iot\\udrive\\users\\(uid)\\drive","Url":""},
+        {"NickName":"miki","Icon":"miki","Type":"uid","Name":"Miki","Path":"c:\\ppk\\ppk-iot\\udrive\\group\\miki","Url":""}
+	]
+}
